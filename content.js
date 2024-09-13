@@ -1,31 +1,41 @@
 // content.js
 
 window.onload = function () {
+  const currentDomain = window.location.hostname;
+
+  if (isUntrustedDomain(currentDomain)) {
     const scripts = document.getElementsByTagName('script');
-  
+    let maliciousScriptDetected = false;
+
     for (let script of scripts) {
-      // Check if script source or inline content is suspicious
-      if (isMaliciousScript(script.src) || isSuspiciousInlineScript(script)) {
-        alert("Warning: A potentially malicious script was detected on this page.");
+      if (isMaliciousScript(script.src)) {
+        maliciousScriptDetected = true;
       }
     }
-  };
-  
-  function isMaliciousScript(src) {
-    // Check against a list of known phishing script URLs
-    const knownMaliciousScripts = [
-      "https://evil.com/malware.js",
-      "https://phishingattack.com/stealer.js"
-    ];
-  
-    return knownMaliciousScripts.some(malicious => src.includes(malicious));
+
+    if (maliciousScriptDetected) {
+      alert("Warning: A potentially malicious script was detected on this page.");
+    }
   }
-  
-  function isSuspiciousInlineScript(script) {
-    // Analyze the inline script content for obfuscation or suspicious patterns
-    const suspiciousPatterns = [/eval\(/, /document\.cookie/, /window\.location/];
-  
-    // Check for any suspicious pattern in the inline script
-    return suspiciousPatterns.some(pattern => pattern.test(script.textContent));
-  }
-  
+};
+
+function isUntrustedDomain(domain) {
+  // Check if the current domain is in the list of untrusted domains
+  const untrustedDomains = [
+    "example-untrusted.com",
+    "suspiciouslogin.com",
+    "shady-website.org"
+  ];
+
+  return untrustedDomains.some(untrusted => domain.includes(untrusted));
+}
+
+function isMaliciousScript(src) {
+  // Define a list of high-risk script URLs
+  const highRiskScripts = [
+    "https://example-untrusted.com/phishing-script.js",
+    "https://suspiciouslogin.com/malware.js"
+  ];
+
+  return highRiskScripts.some(maliciousSrc => src.includes(maliciousSrc));
+}

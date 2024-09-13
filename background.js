@@ -1,27 +1,39 @@
 // background.js
 
 chrome.webRequest.onBeforeRequest.addListener(
-    function (details) {
-      // Analyze URL patterns to detect phishing scripts or malicious domains
+  function (details) {
+    if (isUntrustedDomain(details.url)) {
+      console.warn("Untrusted domain detected:", details.url);
       if (isPhishingURL(details.url)) {
-        // Warn the user or block the request
-        console.warn("Phishing attempt detected:", details.url);
-        return { cancel: true }; // Blocks the request if identified as phishing
+        console.warn("Phishing attempt detected on:", details.url);
+        return { cancel: true }; // Block the request
       }
-    },
-    { urls: ["<all_urls>"] },
-    ["blocking"]
-  );
-  
-  function isPhishingURL(url) {
-    // Simple check: Look for known malicious domains or phishing signatures in URLs
-    const phishingDomains = [
-      "malicioussite.com",
-      "phishingsite.net",
-      "dangerouslogin.io"
-    ];
-  
-    // Return true if the URL matches any of the phishing domains
-    return phishingDomains.some(domain => url.includes(domain));
-  }
-  
+    }
+  },
+  { urls: ["<all_urls>"] },
+  ["blocking"]
+);
+
+// List of untrusted domains where phishing might occur
+const untrustedDomains = [
+  "example-untrusted.com",
+  "suspiciouslogin.com",
+  "shady-website.org"
+];
+
+// List of specific phishing URLs or paths
+const phishingURLList = [
+  "https://example-untrusted.com/phishing-script.js",
+  "https://suspiciouslogin.com/malware.js",
+  "https://shady-website.org/login.php"
+];
+
+// Function to check if the domain is untrusted
+function isUntrustedDomain(url) {
+  return untrustedDomains.some(domain => url.includes(domain));
+}
+
+// Function to check if the URL is a known phishing attempt
+function isPhishingURL(url) {
+  return phishingURLList.some(phishingUrl => url.includes(phishingUrl));
+}
