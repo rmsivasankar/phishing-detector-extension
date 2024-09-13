@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Phishing Detector</title>
+  <title>HTTP Warning</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    button { padding: 10px; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Phishing Script Detector</h1>
-  <button id="toggle">Enable Protection</button>
-  <script src="popup.js"></script>
+  <h1 class="warning">Insecure Website</h1>
+  <p>This website is using HTTP and is not secure.</p>
+  <p>Proceed with caution as this site could be vulnerable to attacks.</p>
 </body>
 </html>
